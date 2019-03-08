@@ -87,17 +87,70 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.Stack()
+    startLocation = problem.getStartState()
+    startNode = (startLocation, [])
+    fringe.push(startNode)
+    visitedLocation = set()
+    
+    return genericSearch(fringe, problem, visitedLocation, None, "DFS")
+    #util.raiseNotDefined()
+    
+def genericSearch(fringe, problem, visitedLocation, heuristic, searchType):
+    searchTypeList = ['DFS',"BFS"]
+    searchTypeListCost = ['UCS','ASTAR']
+    while not fringe.isEmpty():
+        node = fringe.pop()
+        if searchType is 'DFS':
+            visitedLocation.add(node[0])
+        
+        if problem.isGoalState(node[0]):
+            return node[1] 
+        
+        if searchType in searchTypeListCost:
+            if node[0] not in visitedLocation:
+                visitedLocation.add(node[0])
+                for successor in problem.getSuccessors(node[0]):
+                    if successor[0] not in visitedLocation:
+                        cost = node[2] + successor[2]
+                        if searchType is 'UCS':
+                            fringe.push((successor[0], node[1] + [successor[1]], cost), cost)
+                        else:
+                            totalCost = cost + heuristic(successor[0], problem)
+                            fringe.push((successor[0], node[1] + [successor[1]], cost), totalCost)
+        else:               
+            successors = problem.getSuccessors(node[0])
+            for item in successors:
+                if searchType in searchTypeList:
+                    if item[0] in visitedLocation:
+                        continue
+                    if searchType is 'BFS':
+                        visitedLocation.add(item[0])
+                    fringe.push((item[0], node[1] + [item[1]]))
+           
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.Queue()
+    startLocation = problem.getStartState()
+    startNode = (startLocation, [])
+    fringe.push(startNode)
+    visitedLocation = set()
+    visitedLocation.add(startLocation)
+    return genericSearch(fringe, problem, visitedLocation, None, "BFS")
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.PriorityQueue()
+    # Just location, like [7, 7]
+    startLocation = problem.getStartState()
+    # (location, path, cost)
+    startNode = (startLocation, [], 0)
+    fringe.push(startNode, 0)
+    visitedLocation = set()
+    return genericSearch(fringe, problem, visitedLocation, None,"UCS")
 
 def nullHeuristic(state, problem=None):
     """
@@ -109,7 +162,14 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.PriorityQueue()
+    # Just location, like [7, 7]
+    startLocation = problem.getStartState()
+    # (location, path, cost)
+    startNode = (startLocation, [], 0)
+    fringe.push(startNode, 0)
+    visitedLocation = set()
+    return genericSearch(fringe, problem, visitedLocation, heuristic, "ASTAR")
 
 
 # Abbreviations
