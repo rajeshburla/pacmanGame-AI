@@ -96,6 +96,8 @@ def depthFirstSearch(problem):
     return genericSearch(fringe, problem, visitedLocation, None, "DFS")
     #util.raiseNotDefined()
     
+#This method is added as generic fucntion for all the search techniques 
+#variable searchType is used to differ each algorithm call
 def genericSearch(fringe, problem, visitedLocation, heuristic, searchType):
     searchTypeList = ['DFS',"BFS"]
     searchTypeListCost = ['UCS','ASTAR']
